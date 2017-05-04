@@ -1,0 +1,124 @@
+<% include ./partials/header %>
+<div>
+	<!-- <div class="input-group">
+		<label>Ano:</label>
+		<i class="fa fa-caret-left" onclick="changeDates('year','minus')"></i>
+		<input type="number" class="yearNumber" readonly name="" value="2017">
+		<i class="fa fa-caret-right" onclick="changeDates('year','plus')"></i>
+	</div>
+	<div class="input-group">
+		<label>Semana:</label>
+		<i class="fa fa-caret-left" onclick="changeDates('week','minus')"></i>
+		<i class="fa fa-caret-right" onclick="changeDates('week','plus')"></i>		
+	</div> -->
+</div>
+<table class="table">
+	<thead>
+		<th>Nome</th>
+		<th>Semana - <span class="weekheader1"></span></th>
+		<th>Semana - <span class="weekheader2"></span></th>
+		<th>Semana - <span class="weekheader3"></span></th>
+	</thead>
+	<tbody>
+		<% employees.forEach(function(employee){ %>
+			<tr class="<%= employee._id %>">
+				<td><%= employee.name %></td>
+				<td class="weekcontent1">
+					<div class="input-group">
+						<label>Soma:</label>
+						<span class="sum"></span>
+					</div>
+					<div class="input-group">
+						<label>Status:</label>
+						<span class="status"></span>
+					</div>
+					<div class="input-group hidden">
+						<label>Comentários:</label>
+						<textarea name="comments" cols="30" rows="4"></textarea>
+					</div>
+				</td>
+				<td class="weekcontent2">
+					<div class="input-group">
+						<label>Soma:</label>
+						<span class="sum"></span>
+					</div>
+					<div class="input-group">
+						<label>Status:</label>
+						<span class="status"></span>
+					</div>
+					<div class="input-group hidden">
+						<label>Comentários:</label>
+						<textarea name="comments" cols="30" rows="4"></textarea>
+					</div>
+				</td>
+				<td class="weekcontent3">
+					<div class="input-group">
+						<label>Soma:</label>
+						<span class="sum"></span>
+					</div>
+					<div class="input-group">
+						<label>Status:</label>
+						<span class="status"></span>
+					</div>
+					<div class="input-group hidden">
+						<label>Comentários:</label>
+						<textarea name="comments" cols="30" rows="4"></textarea>
+					</div>
+				</td>
+			</tr>
+		<%}) %>
+	</tbody>
+</table>
+
+<script>
+	if(<%- JSON.stringify(farm) %>){
+		var farmValue = <%- JSON.stringify(farm) %>;
+		$(".title").text(farmValue);
+	}
+	var employeesLatestData = <%- JSON.stringify(employees) %>;
+	var week = moment().format('W');
+	var year = new Date().getFullYear();
+	populateWeeks();
+
+	function populateWeeks(){
+		populateWeekHeader(week,"3");		
+		populateWeekHeader(week-1,"2");		
+		populateWeekHeader(week-2,"1");		
+	}
+
+	function populateWeekHeader(weekToPopulate, weekclass){
+	    var day1 = (1 + (weekToPopulate - 1) * 7);
+	    var date1 = new Date(year, 0, day1);
+	    var initialDay = moment(date1).format("DD/MM")
+	    var day2 = (7 + (weekToPopulate - 1) * 7);
+	    var date2 = new Date(year, 0, day2);
+	    var finalDay = moment(date2).format("DD/MM")
+		$(".weekheader" + weekclass).text(weekToPopulate + "(" + initialDay + " - " + finalDay + ")");
+	}
+
+	populateStats();
+	function populateStats(){
+		populateWeekStats(week,"3");
+		populateWeekStats(week-1, "2");
+		populateWeekStats(week-2,"1");
+	}
+
+	function populateWeekStats(weekToPopulate, weekclass){
+		employeesLatestData.forEach(function(employee){
+			if(employee["production"][year][weekToPopulate]){
+				var stats = {
+					"status":employee["production"][year][weekToPopulate]["stats"]["status"],
+					"sum":employee["production"][year][weekToPopulate]["stats"]["sum"],
+					"workedDays":employee["production"][year][weekToPopulate]["stats"]["workedDays"],
+					"comments":employee["production"][year][weekToPopulate]["stats"]["comments"]
+				};
+				$("." + employee["_id"] +" .weekcontent" + weekclass + " .sum").text(stats["sum"].toFixed(2));
+				$(".weekcontent" + weekclass + " .status").text(stats["status"]);
+			}
+		})
+	}
+
+</script>
+
+<% include ./partials/footer %>
+

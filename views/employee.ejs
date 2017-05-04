@@ -1,0 +1,29 @@
+<% include ./partials/header %>
+<a class="btn btn-default" href="/addemployee">Adicionar funcionário</a>
+<table class="table">
+	<thead>
+		<th>Nome</th>
+		<th>Data de início</th>
+		<th>Status</th>
+		<th>Tipo</th>
+		<th>Editar</th>
+		<th>Excluir</th>
+	</thead>
+	<tbody>
+		<% employees.forEach(function(item){ %>
+			<tr>
+				<td><%= item.name %></td>
+				<td><%= item.start %></td>
+				<td>ok</td>
+				<td><%= item.type %></td>
+				<td><a href="/employee/edit/<%=item.name%>">Editar</a></td>
+				<td><a href="/employee/delete/<%=item.name%>">Excluir</a></td>
+			</tr>
+		<%}) %>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var farmValue = <%- JSON.stringify(farm) %>;
+	$(".title").text(farmValue);
+</script>
+<% include ./partials/footer %>

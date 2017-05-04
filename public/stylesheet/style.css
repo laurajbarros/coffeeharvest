@@ -40,7 +40,7 @@ button{
 	margin: -60px auto 100px auto;
 	padding-top: 60px;
 	background-color: #F2F2F2;
-	width:420px;
+	width:90%;
 	min-width:30%;
 	min-height: 550px;
 	text-align: center;
@@ -59,9 +59,9 @@ button{
 	line-height: 60px;
 	position:relative;
 	height:60px;
-	width:420px;
+	width:90%;
 	min-width:30%;
-	margin:90px auto auto auto;
+	margin:10px auto auto auto;
 	background-color: #95A5A5;
 	border-top-left-radius: 15px;
 	border-top-right-radius: 15px;
@@ -81,7 +81,7 @@ button{
 .footer{
 	position:relative;
 	height:40px;
-	width:420px;
+	width:90%;
 	min-width:30%;
 	margin:-140px auto auto auto;
 	background-color: white;
@@ -98,7 +98,7 @@ button{
 }
 
 .topbutton{
-	width:63px;
+	width:180px;
 	text-align: center;
 	background-color: #7E8C8D;
 	position:absolute;
@@ -112,7 +112,9 @@ button{
 
 }
 
-
+.botoesapp{
+	margin:auto 15px;
+}
 .calendario{
 	padding-top: 10px;
 }
@@ -182,4 +184,46 @@ a.botoesappdark:active {
 	color:#F38BA4;
 	font-size:60px;
 	margin:150px auto 0px auto;
+}
+
+
+.weekNumber{
+	display: inline-block;
+}
+
+.change_harvested{
+	width:70px;
+}
+
+.hidden{
+	display: none;
+}
+
+.weekNumber{
+	border:none;
+	width: 60px;
+	font-size:2.3em;
+	padding-left: 10px;
+	text-align: center;
+}
+.yearNumber{
+	border:none;
+	width: 100px;
+	padding-left: 10px;
+	font-size:2.3em;
+	text-align: center;	
+}
+
+.fa-caret-left,.fa-caret-right{
+	font-size:25px;
+}
+
+.input-group{
+	margin:auto;
+}
+
+label{
+	margin-right: 15px;
+	vertical-align: text-bottom;
+	margin-bottom: 0;
 }

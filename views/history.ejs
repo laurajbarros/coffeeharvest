@@ -1,0 +1,251 @@
+<% include ./partials/header %>
+<div>
+	<div class="input-group">
+		<label>Ano:</label>
+		<i class="fa fa-caret-left" onclick="changeDates('year','minus')"></i>
+		<input type="number" class="yearNumber" readonly name="" value="2017">
+		<i class="fa fa-caret-right" onclick="changeDates('year','plus')"></i>
+	</div>
+	<div class="input-group">
+		<label>Semana:</label>
+		<i class="fa fa-caret-left" onclick="changeDates('week','minus')"></i>
+		<input type="number" class="weekNumber" readonly value="18"> 
+		<i class="fa fa-caret-right" onclick="changeDates('week','plus')"></i>		
+	</div>
+</div>
+
+<table class="table">
+	<thead>
+		<th>Nome</th>
+		<th>Domingo - <span class="day1"></span></th>
+		<th>Segunda - <span class="day2"></span></th>
+		<th>Terça - <span class="day3"></span></th>
+		<th>Quarta - <span class="day4"></span></th>
+		<th>Quinta- <span class="day5"></span></th>
+		<th>Sexta - <span class="day6"></span></th>
+		<th>Sábado - <span class="day7"></span></th>
+		<th>Total</th>
+	</thead>
+	<tbody>
+		<% employees.forEach(function(employee){ %>
+			<tr class="<%= employee._id %>">
+				<td><%= employee.name %></td>
+				<td class="1">
+					<span class="harvested">HAHA</span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="2">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="3">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true"onclick="editHarvestedAmount($(this))" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="4">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="5">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="6">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="7">
+					<span class="harvested"></span>
+					<input onkeyup="fetchNewHarvestAmount($(this),event)" type="number" class="change_harvested hidden">
+					<i class="fa fa-pencil" aria-hidden="true" onclick="editHarvestedAmount($(this))"></i>
+				</td>
+				<td class="totalWeek">
+					<span class="total weeklyTotal"></span>
+				</td>
+			</tr>
+		<%}) %>
+		<tr class="totalDay">
+			<td></td>
+			<td><span class="total total1"></span></td>
+			<td><span class="total total2"></span></td>
+			<td><span class="total total3"></span></td>
+			<td><span class="total total4"></span></td>
+			<td><span class="total total5"></span></td>
+			<td><span class="total total6"></span></td>
+			<td><span class="total total7"></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+	if(<%- JSON.stringify(farm) %>){
+		var farmValue = <%- JSON.stringify(farm) %>;
+		$(".title").text(farmValue);
+	}
+	var employeesLatestData = <%- JSON.stringify(employees) %>;
+	var year = $(".yearNumber").val();
+	var week = $(".weekNumber").val();
+	populateTable();
+
+	function changeDates(type,count){
+		if(type == "year"){
+			if(count == "plus"){
+				year++;
+				$(".yearNumber").val(year);
+			} else{
+				year--;
+				$(".yearNumber").val(year);
+			}
+		} else{
+			if(count == "plus"){
+				week++;
+				$(".weekNumber").val(week);
+			} else{
+				week--;
+				$(".weekNumber").val(week);
+			}
+		}
+		populateTable();
+	}
+
+	function populateTableWithMonthDays(){
+		for(i=1; i<8;i++){
+		    var day = (i + (week - 1) * 7);
+		    var date = new Date(year, 0, day);
+		    var dateEasy = moment(date).format("DD/MM")
+			$(".day" + i).text(dateEasy)
+		} 
+	}
+	
+	function editHarvestedAmount($this){
+		var day = $this.parent()[0].className;
+		var employee = $this.parent().parent()[0].className;
+		$("." + employee + " ." + day + " input").toggleClass("hidden");
+		$("." + employee + " ." + day + " i").toggleClass("hidden");
+		$("." + employee + " ." + day + " span").toggleClass("hidden");
+	}
+
+	function fetchNewHarvestAmount($this, event){
+		if(event.keyCode == 13){
+			var day = $this.parent()[0].className;
+			var employee = $this.parent().parent()[0].className;
+			var value = event.target.value;
+			saveHarvestedAmount(employee,day,value);
+		}
+	}
+
+	function saveHarvestedAmount(employee,day,value){
+		var update = {
+			year: year,
+			week: week,
+			day: day,
+			employee: employee,
+			value: value
+		}
+		$.ajax({
+			type: "POST",
+			url:"/editharvest",
+			data: update,
+			success: function(err, response){
+				fetchLatestEmployeesData()
+				$("." + employee + " ." + day + " input").toggleClass("hidden");
+				$("." + employee + " ." + day + " i").toggleClass("hidden");
+				$("." + employee + " ." + day + " span").toggleClass("hidden");
+			}
+		})
+	}
+
+	function eraseHarvestedAmount(){
+		$(".harvested").each(function(index,item){
+			$(this).text("");
+		})
+		$(".total").each(function(index,item){
+			$(this).text("");
+		})
+		$(".change_harvested").each(function(index,item){
+			$(this).val("");
+		})
+	}
+
+	function populateTableWithDaySum(){
+		for(i=1;i<8;i++){
+			var arrayOfHarvest = [];
+			$("." + i).each(function(index,value){
+				var $this = $(this);
+				$this.children(".harvested").each(function(){
+					var value = this.textContent;
+					if(!isNaN(value) && value !==""){
+						arrayOfHarvest.push(value);
+					}
+				});
+				var sum = sumOfCoffeeMeasures(arrayOfHarvest).toFixed(2);
+				$(".total" + i).text(sum);
+			})
+		}
+	}
+
+	function sumOfCoffeeMeasures(harvested){
+		var sum = 0;
+		harvested.forEach(function(value){
+			var integer = Math.trunc(value);
+			var decimalConverted = parseFloat((value - integer).toFixed(2))/6*10;
+			var valueConverted = integer + decimalConverted;
+			sum = sum + valueConverted;
+
+		})
+		var sumInteger = Math.trunc(sum);
+		var sumDecimal = sum - sumInteger;
+		var sumConvertedBack = sumDecimal/10*6;
+		var sumFinal = sumInteger + sumConvertedBack;
+		return sumFinal
+	}
+
+	function populateTableWithHarvestedAmount(employees){
+		employees.forEach(function(employee){
+			if(employee["production"]){
+				if(employee["production"][year]){
+					if(employee["production"][year][week]){
+						var daysItHasData = Object.keys(employee["production"][year][week]);
+						daysItHasData.forEach(function(day){
+							if(day !== "stats"){
+								var dataInEachDay = employee["production"][year][week][day]["data"];
+								$("." + employee._id + " ." + day + " span").text(dataInEachDay);
+								$("." + employee._id + " ." + day + " input").val(dataInEachDay);
+							}
+						})
+						var sumValue = employee["production"][year][week]["stats"]["sum"].toFixed(2);
+						$("." + employee._id + " .totalWeek .weeklyTotal").text(sumValue);
+					}
+				}
+			}
+		})
+	}
+
+	function populateTable(){
+		var year = $(".yearNumber").val();
+		var week = $(".weekNumber").val();
+		eraseHarvestedAmount();
+		populateTableWithHarvestedAmount(employeesLatestData);
+		populateTableWithMonthDays();
+		populateTableWithDaySum();
+	}
+
+	function fetchLatestEmployeesData(){
+		$.ajax({
+			type: "GET",
+			url:"/employees",
+			success: function(body){
+				employeesLatestData = body;
+				populateTable();
+			}
+		})
+	}
+</script>
+
+<% include ./partials/footer %>

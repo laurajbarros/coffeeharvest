@@ -2,22 +2,26 @@
 
   <div class="bloco">
     <div>
-
       <form class= "form" action="/register" method="POST">
-        <input type="text" placeholder="Nome" name="username">
+        <input type="text" class="username" placeholder="Nome de usuário" name="username">
+        <input type="text" placeholder="Nome da Fazenda" name="farm">
         <input type="password" placeholder="password" name="password">
         <button>Submit</button>
       </form>
-
     </div>
   </div>
 
-<script>
-$(".title").append("<p>Crie sua conta</p>")
-</script> 
+<script type="text/javascript">
+  $("input.username").on({
+    keydown: function(e) {
+      if (e.which === 32)
+        return false;
+    },
+    change: function() {
+      this.value = this.value.replace(/\s/g, "");
+    }
+  });
 
-
-
-
-
+  $(".title").text("Cadastre-se");
+</script>
 <% include ./partials/footer %>
